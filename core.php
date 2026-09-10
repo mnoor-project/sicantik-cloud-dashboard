@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
+date_default_timezone_set('Asia/Jakarta');
 
 function getSetting(string $key, string $default = ''): string {
     try {
@@ -336,8 +337,9 @@ function auditLog(string $action, string $detail = '', ?array $user = null): voi
     $userId = $user['id'] ?? null;
     $username = $user['username'] ?? '-';
     $ip = $_SERVER['REMOTE_ADDR'] ?? 'cli';
-    $db->prepare("INSERT INTO audit_log(user_id,username,action,detail,ip) VALUES(?,?,?,?,?)")
-       ->execute([$userId, $username, $action, $detail, $ip]);
+    $ts = date('Y-m-d H:i:s');
+    $db->prepare("INSERT INTO audit_log(user_id,username,action,detail,ip,created_at) VALUES(?,?,?,?,?,?)")
+       ->execute([$userId, $username, $action, $detail, $ip, $ts]);
 }
 
 // ── API Token helpers ──

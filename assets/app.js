@@ -587,8 +587,13 @@ function getExportMeta() {
   return { fields, name };
 }
 
+function logExport(format, reportName) {
+  fetch('api/handler.php', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'log_export',format,report_name:reportName}) }).catch(()=>{});
+}
+
 function exportCSV() {
   const { fields, name } = getExportMeta();
+  logExport('csv', name);
   const header = fields.map(f => f.label || f.key);
   const rows = filteredData.map(row => fields.map(f => '"' + String(row[f.key] ?? '').replace(/"/g, '""') + '"'));
   const csv = [header.join(','), ...rows.map(r => r.join(','))].join('\n');
@@ -601,6 +606,7 @@ function exportCSV() {
 
 function exportExcel() {
   const { fields, name } = getExportMeta();
+  logExport('excel', name);
   const header = fields.map(f => f.label || f.key);
   const aoa = [header, ...filteredData.map(row => fields.map(f => row[f.key] ?? ''))];
   const ws = XLSX.utils.aoa_to_sheet(aoa);
@@ -617,6 +623,7 @@ function exportExcel() {
 
 function exportPDF() {
   const { fields, name } = getExportMeta();
+  logExport('pdf', name);
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: fields.length > 5 ? 'l' : 'p', unit: 'mm', format: 'a4' });
 

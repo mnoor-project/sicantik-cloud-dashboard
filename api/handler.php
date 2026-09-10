@@ -226,6 +226,13 @@ switch ($action) {
         jsonResponse(['ok'=>true]);
         break;
 
+    case 'log_export':
+        $format = $input['format'] ?? 'unknown';
+        $report = $input['report_name'] ?? '';
+        auditLog('export_' . $format, 'Laporan: ' . $report, $user);
+        jsonResponse(['ok'=>true]);
+        break;
+
     case 'generate_api_token':
         requireRole($user, 'admin');
         auditLog('generate_api_token', '', $user);
