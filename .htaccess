@@ -1,0 +1,15 @@
+# Protect sensitive files
+<FilesMatch "\.(sqlite|db|sqlite-wal|sqlite-shm)$">
+    Require all denied
+</FilesMatch>
+
+# Deny access to PHP files in subdirectories directly (except api/handler.php)
+<FilesMatch "^core\.php$|^config\.php$">
+    Require all denied
+</FilesMatch>
+
+# Pretty URLs (optional future use)
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [L,QSA]

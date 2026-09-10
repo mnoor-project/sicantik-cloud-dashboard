@@ -1,0 +1,7 @@
+data.sqlite
+data.sqlite-wal
+data.sqlite-shm
+debug_api.log
+*.bak
+*.bak2
+/vendor/
