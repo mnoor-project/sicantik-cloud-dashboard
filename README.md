@@ -1,6 +1,8 @@
 # SiCantik Cloud Dashboard
 
-Dashboard web untuk menampilkan dan mengelola data dari API SiCantik (SPLP) milik **DPMPTSP Kabupaten Kotawaringin Timur**.
+**Dashboard Mandiri Sicantik Cloud** — dashboard web untuk menampilkan dan mengelola data dari API SiCantik (SPLP), dikembangkan untuk **DPMPTSP Kabupaten Kotawaringin Timur**.
+
+> Aplikasi pendamping yang dikembangkan secara mandiri. Bukan produk resmi Sicantik Cloud.
 
 ## Fitur
 
@@ -115,6 +117,26 @@ chmod 755 /var/www/sicantik.ptspkotim.my.id
 
 Database SQLite (`data.sqlite`) akan dibuat otomatis saat pertama kali diakses.
 
+### Login Pertama
+
+Saat database dibuat, akun `admin` dibuat dengan **password acak**. Password tersebut disimpan di file `.initial_admin_password` di folder aplikasi (file tersembunyi, izin `0600`, tidak ikut di-commit).
+
+```bash
+cat /var/www/sicantik.ptspkotim.my.id/.initial_admin_password
+```
+
+Segera login, ganti password di menu **Profil**, lalu hapus file tersebut.
+
+### Keamanan Web Server
+
+Pastikan web server memblokir akses langsung ke file sensitif (database, log, dan file berawalan titik). Pada Apache sudah ditangani `.htaccess`. Pada **Nginx**, `.htaccess` tidak berlaku, tambahkan pada blok `server`:
+
+```nginx
+location ~ /\.                          { deny all; }
+location ~* \.(sqlite|sqlite-wal|sqlite-shm|db)$ { deny all; }
+location ~* \.log$                      { deny all; }
+```
+
 ### Cron Job (Auto Sync)
 
 ```bash
@@ -122,6 +144,18 @@ Database SQLite (`data.sqlite`) akan dibuat otomatis saat pertama kali diakses.
 */5 * * * * /usr/bin/php /var/www/sicantik.ptspkotim.my.id/cron.php >> /var/log/sicantik-cron.log 2>&1
 ```
 
+## Dukung Pengembangan ❤️
+
+Aplikasi ini dikembangkan dan dirawat secara mandiri, gratis, dan dijalankan di server masing-masing instansi (tanpa biaya langganan). Jika bermanfaat, dukungan sukarela Anda membantu waktu dan tenaga untuk perbaikan, pengembangan fitur baru, dan dokumentasi.
+
+| | |
+|---|---|
+| 🏦 Bank Jago | `100891675874` a.n. Muhammad Noor |
+| 💬 WhatsApp | [085752735703](https://wa.me/6285752735703) |
+| 🌐 Website | [muhammadnoor.com](https://muhammadnoor.com) |
+
+Donasi bersifat sukarela dan tidak wajib. Seluruh fitur tetap dapat digunakan sepenuhnya tanpa donasi. Dukungan bersifat pribadi kepada pengembang dan tidak berkaitan dengan layanan, pungutan, atau kewenangan instansi mana pun. Halaman yang sama tersedia di dalam aplikasi pada `?page=donate`.
+
 ## Lisensi
 
-Internal — DPMPTSP Kabupaten Kotawaringin Timur.
+[MIT](LICENSE) © 2026 Muhammad Noor

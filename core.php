@@ -105,8 +105,13 @@ function initDB(PDO $db): void {
     $db->exec("CREATE TABLE reports(id INTEGER PRIMARY KEY AUTOINCREMENT,connection_id INTEGER NOT NULL,name TEXT NOT NULL,description TEXT DEFAULT '',icon TEXT DEFAULT '',config_fields TEXT DEFAULT '[]',config_filters TEXT DEFAULT '[]',config_charts TEXT DEFAULT '[]',override_params TEXT DEFAULT '',sort_order INTEGER DEFAULT 0,created_by INTEGER,created_at DATETIME DEFAULT CURRENT_TIMESTAMP,updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
     $db->exec("CREATE TABLE data_cache(id INTEGER PRIMARY KEY AUTOINCREMENT,connection_id INTEGER NOT NULL,data_json TEXT NOT NULL,record_count INTEGER DEFAULT 0,synced_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
     $db->exec("CREATE TABLE sync_log(id INTEGER PRIMARY KEY AUTOINCREMENT,connection_id INTEGER NOT NULL,status TEXT NOT NULL,record_count INTEGER DEFAULT 0,duration REAL DEFAULT 0,error_message TEXT DEFAULT '',synced_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
-    $hash = password_hash('admin123', PASSWORD_DEFAULT);
+    // Password awal acak (bukan default publik). Disimpan di file yang tidak bisa diakses via web.
+    $initialPassword = bin2hex(random_bytes(6));
+    $hash = password_hash($initialPassword, PASSWORD_DEFAULT);
     $db->prepare("INSERT INTO users(username,password_hash,name,role) VALUES(?,?,?,?)")->execute(['admin', $hash, 'Administrator', 'admin']);
+    $credFile = __DIR__ . '/.initial_admin_password';
+    @file_put_contents($credFile, "Username: admin\nPassword: " . $initialPassword . "\n\nSegera login, ganti password di menu Profil, lalu hapus file ini.\n");
+    @chmod($credFile, 0600);
 }
 
 function login(string $username, string $password): ?array {

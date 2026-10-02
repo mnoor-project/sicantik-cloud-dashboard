@@ -1,4 +1,7 @@
 # Protect sensitive files
+<FilesMatch "^\.initial_admin_password$">
+    Require all denied
+</FilesMatch>
 <FilesMatch "\.(sqlite|db|sqlite-wal|sqlite-shm)$">
     Require all denied
 </FilesMatch>
