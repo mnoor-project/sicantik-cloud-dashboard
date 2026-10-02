@@ -2,7 +2,7 @@
 <?php
 /**
  * cron.php — Auto Sync for SiCantik Cloud
- * Run via crontab: every 5 minutes /usr/bin/php /var/www/sicantik.ptspkotim.my.id/cron.php >> /var/log/sicantik-cron.log 2>&1
+ * Run via crontab: every 5 minutes /usr/bin/php /var/www/sicantik-dashboard/cron.php >> /var/log/sicantik-cron.log 2>&1
  */
 define('CRON_MODE', true);
 require_once __DIR__ . '/core.php';

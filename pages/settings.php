@@ -36,7 +36,7 @@ $activeTab = $_GET['tab'] ?? 'identity';
     </div>
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
-      <input type="text" id="set-subtitle" value="<?=e(getAppSubtitle())?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="DPMPTSP Kab. Kotim">
+      <input type="text" id="set-subtitle" value="<?=e(getAppSubtitle())?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Nama instansi">
     </div>
   </div>
   <button onclick="saveIdentity()" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition text-sm">💾 Simpan</button>
