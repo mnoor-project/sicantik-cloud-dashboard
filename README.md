@@ -1,6 +1,6 @@
 # SiCantik Cloud Dashboard
 
-**Dashboard Mandiri Sicantik Cloud** — dashboard web untuk menampilkan dan mengelola data dari API SiCantik (SPLP), dikembangkan untuk **DPMPTSP Kabupaten Kotawaringin Timur**.
+**Dashboard Mandiri Sicantik Cloud** — dashboard web untuk menampilkan dan mengelola data dari API SiCantik (SPLP).
 
 > Aplikasi pendamping yang dikembangkan secara mandiri. Bukan produk resmi Sicantik Cloud.
 
@@ -109,10 +109,10 @@ Autentikasi: `Authorization: Bearer {token}` — token di-generate dari halaman 
 
 ```bash
 # Clone repository
-git clone git@github.com:mnoor-project/sicantik-cloud-dashboard.git /var/www/sicantik.ptspkotim.my.id
+git clone git@github.com:mnoor-project/sicantik-cloud-dashboard.git /var/www/sicantik-dashboard
 
 # Pastikan writable untuk SQLite
-chmod 755 /var/www/sicantik.ptspkotim.my.id
+chmod 755 /var/www/sicantik-dashboard
 ```
 
 Database SQLite (`data.sqlite`) akan dibuat otomatis saat pertama kali diakses.
@@ -122,7 +122,7 @@ Database SQLite (`data.sqlite`) akan dibuat otomatis saat pertama kali diakses.
 Saat database dibuat, akun `admin` dibuat dengan **password acak**. Password tersebut disimpan di file `.initial_admin_password` di folder aplikasi (file tersembunyi, izin `0600`, tidak ikut di-commit).
 
 ```bash
-cat /var/www/sicantik.ptspkotim.my.id/.initial_admin_password
+cat /var/www/sicantik-dashboard/.initial_admin_password
 ```
 
 Segera login, ganti password di menu **Profil**, lalu hapus file tersebut.
@@ -141,8 +141,20 @@ location ~* \.log$                      { deny all; }
 
 ```bash
 # Jalankan setiap 5 menit
-*/5 * * * * /usr/bin/php /var/www/sicantik.ptspkotim.my.id/cron.php >> /var/log/sicantik-cron.log 2>&1
+*/5 * * * * /usr/bin/php /var/www/sicantik-dashboard/cron.php >> /var/log/sicantik-cron.log 2>&1
 ```
+
+## Demo
+
+Coba langsung: **https://scdemo.ptspkotim.my.id/**
+
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | `admin` | `admin` |
+| Editor | `editor` | `editor` |
+| Viewer | `viewer` | `viewer` |
+
+> Instance demo berisi **data fiktif** dan direset otomatis setiap 6 jam, jadi perubahan yang Anda buat akan hilang. Akun demo bersifat publik: jangan memasukkan data atau kredensial asli. Jika memasang aplikasi ini sendiri, gunakan password acak dari `.initial_admin_password`.
 
 ## Dukung Pengembangan ❤️
 
