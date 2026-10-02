@@ -207,6 +207,12 @@ async function deleteReport(id) {
   location.reload();
 }
 
+async function deleteReportAndGo(id) {
+  if (!confirm('Hapus laporan ini secara permanen? Tindakan ini tidak bisa dibatalkan.')) return;
+  await api('delete_report', { id });
+  location.href = '?page=reports';
+}
+
 // ── Report Builder ──
 let builderFields = [];
 let builderFilters = [];

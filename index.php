@@ -48,6 +48,7 @@ $roleMap = [
     'settings'=>['admin'],
     'audit'=>['admin'],
     'profile'=>['admin','editor','viewer'],
+    'donate'=>['admin','editor','viewer'],
 ];
 if (!isset($roleMap[$page])) $page = 'home';
 requireRole($user, ...$roleMap[$page]);
@@ -113,6 +114,7 @@ if (!file_exists($pageFile)) $pageFile = __DIR__ . '/pages/home.php';
   </nav>
   <div class="absolute bottom-0 w-full p-3 border-t border-gray-200 text-xs text-gray-400">
     v<?=APP_VERSION?> • SQLite
+    <a href="?page=donate" class="block mt-1 hover:text-red-500">&#10084;&#65039; Dukung pengembangan</a>
   </div>
 </aside>
 

@@ -60,7 +60,7 @@ $lastSync = getLastSync($report['connection_id']);
 <?php endif; ?>
 
 <!-- Charts -->
-<?php if(!empty($charts)): ?>
+<?php if(false && !empty($charts)): /* chart dinonaktifkan sementara */ ?>
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6" id="charts-area">
   <?php foreach($charts as $ci=>$ch): ?>
   <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">

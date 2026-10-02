@@ -9,7 +9,12 @@ if ($editId) {
     $editing = $st->fetch();
 }
 ?>
-<h2 class="text-2xl font-bold text-gray-800 mb-6"><?=$editing?'✏️ Edit':'＋ Buat'?> Laporan</h2>
+<div class="flex items-center justify-between mb-6 flex-wrap gap-2">
+  <h2 class="text-2xl font-bold text-gray-800"><?=$editing?'✏️ Edit':'＋ Buat'?> Laporan</h2>
+  <?php if($editing): ?>
+  <button type="button" onclick="deleteReportAndGo(<?=intval($editing['id'])?>)" class="bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-100 text-sm">🗑 Hapus Laporan</button>
+  <?php endif; ?>
+</div>
 
 <?php if(empty($conns)): ?>
 <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">
@@ -25,8 +30,11 @@ if ($editId) {
     <button onclick="goStep(2)" id="step-ind-2" class="px-3 py-1 rounded-full bg-gray-200 text-gray-600">2 Kolom</button>
     <span class="text-gray-300">→</span>
     <button onclick="goStep(3)" id="step-ind-3" class="px-3 py-1 rounded-full bg-gray-200 text-gray-600">3 Filter</button>
+    <?php /* Fitur chart dinonaktifkan sementara: set $CHARTS_ENABLED=true untuk mengaktifkan lagi */ $CHARTS_ENABLED = false; ?>
+    <?php if($CHARTS_ENABLED): ?>
     <span class="text-gray-300">→</span>
     <button onclick="goStep(4)" id="step-ind-4" class="px-3 py-1 rounded-full bg-gray-200 text-gray-600">4 Chart</button>
+    <?php endif; ?>
   </div>
 
   <?php include __DIR__ . '/../templates/builder_steps.php'; ?>

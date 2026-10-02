@@ -77,7 +77,11 @@
   <button onclick="addFilter()" class="mt-3 text-blue-600 hover:underline text-sm">＋ Tambah Filter</button>
   <div class="mt-4 flex justify-between">
     <button onclick="goStep(2)" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200 text-sm">← Kembali</button>
+    <?php if(!empty($CHARTS_ENABLED)): ?>
     <button onclick="goStep(4)" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 text-sm">Lanjut →</button>
+    <?php else: ?>
+    <button onclick="saveReport()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 text-sm">💾 Simpan Laporan</button>
+    <?php endif; ?>
   </div>
 </div>
 
