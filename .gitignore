@@ -6,3 +6,4 @@ debug_api.log
 *.bak2
 /vendor/
 .initial_admin_password
+config.local.php

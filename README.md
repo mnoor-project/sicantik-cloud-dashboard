@@ -137,6 +137,23 @@ location ~* \.(sqlite|sqlite-wal|sqlite-shm|db)$ { deny all; }
 location ~* \.log$                      { deny all; }
 ```
 
+Disarankan juga (Nginx): hanya skrip masuk yang boleh dieksekusi, supaya `core.php`, `cron.php`, `pages/*.php`, dan berkas internal lain tidak bisa dipanggil langsung lewat web:
+
+```nginx
+location = /index.php       { include fastcgi.conf; fastcgi_pass unix:/run/php/php8.3-fpm.sock; }
+location = /api/handler.php { include fastcgi.conf; fastcgi_pass unix:/run/php/php8.3-fpm.sock; }
+location = /api/public.php  { include fastcgi.conf; fastcgi_pass unix:/run/php/php8.3-fpm.sock; }
+location ~ \.php$ { return 404; }
+```
+
+Hanya skrip masuk yang boleh dieksekusi di atas. `cron.php` tetap berjalan lewat cron (CLI), bukan lewat web.
+
+Aplikasi juga membatasi percobaan login (5 gagal per 10 menit per IP), memeriksa Origin pada `api/handler.php`, dan memverifikasi sertifikat SSL saat menghubungi gateway. Di belakang Cloudflare, buat `config.local.php` (tidak ikut git) agar pembatasan login memakai IP asli pengunjung:
+
+```php
+<?php define('TRUST_CF_IP', true);
+```
+
 ### Cron Job (Auto Sync)
 
 ```bash

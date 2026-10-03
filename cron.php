@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
 /**
  * cron.php — Auto Sync for SiCantik Cloud
  * Run via crontab: every 5 minutes /usr/bin/php /var/www/sicantik-dashboard/cron.php >> /var/log/sicantik-cron.log 2>&1

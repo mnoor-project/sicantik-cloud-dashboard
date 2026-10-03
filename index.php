@@ -8,10 +8,16 @@ $page = $_GET['page'] ?? 'home';
 if ($page === 'login') {
     $error = '';
     if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
-        $user = login($_POST['username'] ?? '', $_POST['password'] ?? '');
-        if ($user) { auditLog('login', 'Login berhasil', $user); header('Location: ?page=home'); exit; }
-        $error = 'Username atau password salah';
-        auditLog('login_failed', 'Username: ' . ($_POST['username'] ?? ''));
+        $ip = clientIp();
+        if (loginBlocked($ip)) {
+            $error = 'Terlalu banyak percobaan gagal. Coba lagi dalam 10 menit.';
+        } else {
+            $user = login($_POST['username'] ?? '', $_POST['password'] ?? '');
+            if ($user) { clearLoginFailures($ip); auditLog('login', 'Login berhasil', $user); header('Location: ?page=home'); exit; }
+            recordLoginFailure($ip);
+            $error = 'Username atau password salah';
+            auditLog('login_failed', 'Username: ' . mb_substr((string)($_POST['username'] ?? ''), 0, 100));
+        }
     }
     include __DIR__ . '/pages/login.php';
     exit;

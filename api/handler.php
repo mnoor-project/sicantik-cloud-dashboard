@@ -3,11 +3,19 @@ require_once __DIR__ . '/../core.php';
 session_start();
 
 header('Content-Type: application/json');
+
+// Proteksi CSRF: hanya POST, dan Origin (atau Referer) harus sama dengan host aplikasi.
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') { http_response_code(405); echo '{"error":"Method Not Allowed"}'; exit; }
+$srcUrl = $_SERVER['HTTP_ORIGIN'] ?? ($_SERVER['HTTP_REFERER'] ?? '');
+$srcHost = $srcUrl !== '' ? parse_url($srcUrl, PHP_URL_HOST) : null;
+$ownHost = explode(':', (string)($_SERVER['HTTP_HOST'] ?? ''))[0];
+if (!is_string($srcHost) || strcasecmp($srcHost, $ownHost) !== 0) { http_response_code(403); echo '{"error":"Forbidden"}'; exit; }
+
 $user = getCurrentUser();
 if (!$user) { http_response_code(401); echo '{"error":"Unauthorized"}'; exit; }
 
 $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-$action = $input['action'] ?? $_GET['action'] ?? '';
+$action = $input['action'] ?? '';
 $db = getDB();
 
 switch ($action) {

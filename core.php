@@ -1,5 +1,24 @@
 <?php
 require_once __DIR__ . '/config.php';
+// Pengaturan khusus instance (tidak ikut git): mis. define('TRUST_CF_IP', true); bila di belakang Cloudflare.
+if (is_file(__DIR__ . '/config.local.php')) require_once __DIR__ . '/config.local.php';
+if (!defined('TRUST_CF_IP')) define('TRUST_CF_IP', false);
+
+function isHttps(): bool {
+    return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+}
+
+function clientIp(): string {
+    if (TRUST_CF_IP && !empty($_SERVER['HTTP_CF_CONNECTING_IP']) && filter_var($_SERVER['HTTP_CF_CONNECTING_IP'], FILTER_VALIDATE_IP)) {
+        return $_SERVER['HTTP_CF_CONNECTING_IP'];
+    }
+    return (string)($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
+}
+
+// Cookie sesi PHP: HttpOnly + SameSite=Lax (+ Secure bila HTTPS)
+ini_set('session.cookie_httponly', '1');
+ini_set('session.cookie_samesite', 'Lax');
+if (isHttps()) ini_set('session.cookie_secure', '1');
 date_default_timezone_set('Asia/Jakarta');
 
 function getSetting(string $key, string $default = ''): string {
@@ -114,6 +133,24 @@ function initDB(PDO $db): void {
     @chmod($credFile, 0600);
 }
 
+// Pembatasan percobaan login: 5 gagal per 10 menit per IP
+function loginBlocked(string $ip): bool {
+    $db = getDB();
+    $db->exec("CREATE TABLE IF NOT EXISTS login_attempts(ip TEXT NOT NULL, at INTEGER NOT NULL)");
+    $db->prepare("DELETE FROM login_attempts WHERE at < ?")->execute([time() - 600]);
+    $st = $db->prepare("SELECT COUNT(*) FROM login_attempts WHERE ip=?");
+    $st->execute([$ip]);
+    return (int)$st->fetchColumn() >= 5;
+}
+
+function recordLoginFailure(string $ip): void {
+    getDB()->prepare("INSERT INTO login_attempts(ip, at) VALUES(?, ?)")->execute([$ip, time()]);
+}
+
+function clearLoginFailures(string $ip): void {
+    getDB()->prepare("DELETE FROM login_attempts WHERE ip=?")->execute([$ip]);
+}
+
 function login(string $username, string $password): ?array {
     $db = getDB();
     $st = $db->prepare("SELECT * FROM users WHERE username=? AND is_active=1");
@@ -123,14 +160,18 @@ function login(string $username, string $password): ?array {
     $token = bin2hex(random_bytes(32));
     $db->prepare("INSERT INTO sessions(token,user_id,expires_at) VALUES(?,?,datetime('now','+7 days'))")->execute([$token, $user['id']]);
     $db->prepare("DELETE FROM sessions WHERE expires_at < datetime('now')")->execute();
-    setcookie('dsc_token', $token, time() + SESSION_LIFETIME, '/', '', false, true);
+    setcookie('dsc_token', $token, [
+        'expires' => time() + SESSION_LIFETIME, 'path' => '/', 'secure' => isHttps(), 'httponly' => true, 'samesite' => 'Lax',
+    ]);
     return $user;
 }
 
 function logout(): void {
     $token = $_COOKIE['dsc_token'] ?? '';
     if ($token) getDB()->prepare("DELETE FROM sessions WHERE token=?")->execute([$token]);
-    setcookie('dsc_token', '', time() - 3600, '/');
+    setcookie('dsc_token', '', [
+        'expires' => time() - 3600, 'path' => '/', 'secure' => isHttps(), 'httponly' => true, 'samesite' => 'Lax',
+    ]);
 }
 
 function getCurrentUser(): ?array {
@@ -192,14 +233,16 @@ function callSicantikAPI(array $conn, array $extra = []): array {
 
     apiDebugLog("=== API CALL ===");
     apiDebugLog("URL: $url");
-    apiDebugLog("Headers: " . json_encode($h));
+    apiDebugLog("Headers: " . json_encode(array_map(fn($x) => preg_replace('/^(auth|apikey):.*$/i', '$1: ***', $x), $h)));
 
     $ch = curl_init($url);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT        => 60,
         CURLOPT_CONNECTTIMEOUT => 10,
-        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
+        CURLOPT_FOLLOWLOCATION => false,
         CURLOPT_HTTPHEADER     => $h,
     ]);
     $t = microtime(true);
