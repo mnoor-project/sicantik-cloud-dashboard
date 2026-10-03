@@ -1,6 +1,6 @@
 # SiCantik Cloud Dashboard
 
-**Dashboard Mandiri Sicantik Cloud** — dashboard web untuk menampilkan dan mengelola data dari API SiCantik (SPLP).
+**Dashboard Mandiri Sicantik Cloud** — dashboard web untuk menampilkan dan mengelola data dari API SiCantik melalui SPLP (Sistem Penghubung Layanan Pemerintah).
 
 > Aplikasi pendamping yang dikembangkan secara mandiri. Bukan produk resmi Sicantik Cloud.
 
