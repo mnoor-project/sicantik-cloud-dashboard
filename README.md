@@ -156,6 +156,9 @@ Coba langsung: **https://scdemo.ptspkotim.my.id/**
 
 > Instance demo berisi **data fiktif** dan direset otomatis setiap 6 jam, jadi perubahan yang Anda buat akan hilang. Akun demo bersifat publik: jangan memasukkan data atau kredensial asli. Jika memasang aplikasi ini sendiri, gunakan password acak dari `.initial_admin_password`.
 
+<!-- Bagian donasi disembunyikan dari tampilan GitHub tetapi tetap ada di berkas ini dan di aplikasi.
+     Hapus baris pembuka dan penutup komentar ini untuk menampilkannya lagi. -->
+<!--
 ## Dukung Pengembangan ❤️
 
 Aplikasi ini dikembangkan dan dirawat secara mandiri, gratis, dan dijalankan di server masing-masing instansi (tanpa biaya langganan). Jika bermanfaat, dukungan sukarela Anda membantu waktu dan tenaga untuk perbaikan, pengembangan fitur baru, dan dokumentasi.
@@ -167,6 +170,7 @@ Aplikasi ini dikembangkan dan dirawat secara mandiri, gratis, dan dijalankan di 
 | 🌐 Website | [muhammadnoor.com](https://muhammadnoor.com) |
 
 Donasi bersifat sukarela dan tidak wajib. Seluruh fitur tetap dapat digunakan sepenuhnya tanpa donasi. Dukungan bersifat pribadi kepada pengembang dan tidak berkaitan dengan layanan, pungutan, atau kewenangan instansi mana pun. Halaman yang sama tersedia di dalam aplikasi pada `?page=donate`.
+-->
 
 ## Lisensi
 
